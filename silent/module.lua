@@ -407,14 +407,10 @@ function Aiming.GetClosestPlayerToCursor()
             -- // Vars
             local TargetPartTemp, _, _, Magnitude = Aiming.GetClosestTargetPartToCursor(Character)
 
-            -- // Check if part exists and health
             if (TargetPartTemp and Aiming.CheckHealth(Player)) then
-                -- // Check if is in FOV
                 if (circle.Radius > Magnitude and Magnitude < ShortestDistance) then
-                    -- // Check if Visible
                     if (Aiming.VisibleCheck and not Aiming.IsPartVisible(TargetPartTemp, Character)) then continue end
 
-                    -- // Set vars
                     ClosestPlayer = Player
                     ShortestDistance = Magnitude
                     TargetPart = TargetPartTemp
@@ -423,18 +419,15 @@ function Aiming.GetClosestPlayerToCursor()
         end
     end
 
-    -- // End
     Aiming.Selected = ClosestPlayer
     Aiming.SelectedPart = TargetPart
 end
 
--- // Heartbeat Function
 Heartbeat:Connect(function()
     Aiming.UpdateFOV()
     Aiming.GetClosestPlayerToCursor()
 end)
 
--- //
-return Aiming
 
--- // If you want the examples, look at the docs.
+
+return Aiming
