@@ -1,0 +1,46 @@
+function AimingB.Check()
+    -- // Check A
+    if not (AimingB.Enabled == true and AimingB.Selected ~= LocalPlayer and AimingB.SelectedPart ~= nil) then
+        return false
+    end
+
+    -- // Check if downed
+    local Character = AimingB.Character(AimingB.Selected)
+    local KOd = Character:WaitForChild("BodyEffects")["K.O"].Value
+    local Grabbed = Character:FindFirstChild("GRABBING_CONSTRAINT") ~= nil
+
+    -- // Check B
+    if (KOd or Grabbed) then
+        return false
+    end
+    if getgenv().DisableKey then
+        print('Disable Key : ' .. getgenv().DisableKey)
+        return false
+    end
+    -- //
+    
+    return true
+end
+
+-- // Hook
+local __index
+__index = hookmetamethod(game, "__index", function(t, k)
+    -- // Check if it trying to get our mouse's hit or target and see if we can use it
+    if (t:IsA("Mouse") and (k == "Hit" or k == "Target") and AimingB.Check()) then
+        -- // Vars
+        local SelectedPart = AimingB.SelectedPart
+
+        -- // Hit/Target
+        if (DaHoodSettingsB.SilentAim and (k == "Hit" or k == "Target")) then
+            -- // Hit to account prediction
+            local Hit = SelectedPart.CFrame + (SelectedPart.Velocity * DaHoodSettingsB.Prediction)
+
+            -- // Return modded val
+            return (k == "Hit" and Hit or SelectedPart)
+        end
+    end
+
+    -- // Return
+    return __index(t, k)
+end)
+
